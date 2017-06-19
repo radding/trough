@@ -19,5 +19,4 @@ RSpec.describe Team, type: :model do
         expect(Team.with("tes").count).to eq(3)
         expect(Team.with("s").count).to eq(5)
     end
-    
 end
