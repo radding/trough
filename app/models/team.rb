@@ -1,4 +1,5 @@
 class Team < ApplicationRecord
+    validates :name, uniqueness: true
 
     before_validation do
         self.name = self.name.downcase
