@@ -3,8 +3,12 @@ class TeamsController < ApplicationController
 
   # GET /teams
   def index
-    @teams = Team.all
-
+    search = request.query_parameters["s"]
+    if (search == nil)
+      @teams = Team.all
+    else
+      @teams = Team.with(search)
+    end
     render json: @teams
   end
 
@@ -16,9 +20,10 @@ class TeamsController < ApplicationController
   # POST /teams
   def create
     @team = Team.new(team_params)
-
-    if @team.save
-      render json: @team, status: :created, location: @team
+    if Team.exists?(name: team_params[:name])
+      render json: @team.errors, status: :conflict
+    elsif @team.save
+      render json: @team, location: @team, :status => 201
     else
       render json: @team.errors, status: :unprocessable_entity
     end
