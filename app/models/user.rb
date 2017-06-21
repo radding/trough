@@ -5,6 +5,6 @@ class User < ActiveRecord::Base
           :omniauthable
   include DeviseTokenAuth::Concerns::User
 
-  has_many :teams_users
+  has_many :teams_users,  :dependent => :delete_all
   has_many :teams, through: :teams_users
 end

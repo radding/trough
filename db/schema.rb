@@ -23,12 +23,12 @@ ActiveRecord::Schema.define(version: 20170621143919) do
   end
 
   create_table "teams_users", force: :cascade do |t|
-    t.integer  "teams_id",   null: false
-    t.integer  "users_id",   null: false
+    t.integer  "team_id",    null: false
+    t.integer  "user_id",    null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["teams_id"], name: "index_teams_users_on_teams_id", using: :btree
-    t.index ["users_id"], name: "index_teams_users_on_users_id", using: :btree
+    t.index ["team_id"], name: "index_teams_users_on_team_id", using: :btree
+    t.index ["user_id"], name: "index_teams_users_on_user_id", using: :btree
   end
 
   create_table "tests", force: :cascade do |t|
@@ -65,6 +65,6 @@ ActiveRecord::Schema.define(version: 20170621143919) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true, using: :btree
   end
 
-  add_foreign_key "teams_users", "teams", column: "teams_id"
-  add_foreign_key "teams_users", "users", column: "users_id"
+  add_foreign_key "teams_users", "teams"
+  add_foreign_key "teams_users", "users"
 end

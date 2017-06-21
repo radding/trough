@@ -1,4 +1,4 @@
-class TeamsController < ApplicationController
+class UsersController < ApplicationController
     before_action :set_user, only: [:show, :update, :destroy]
     before_action :set_team
     before_action :ensure_team, only: [:create]
@@ -10,7 +10,7 @@ class TeamsController < ApplicationController
 
     # GET /teams/1/users/1 or /users/1
     def show
-      render json: (@team.nil? ? User.all : @team.users.find(params[:id]))
+      render json: (@team.nil? ? @user : @team.users.find(params[:id]))
     end
 
     # POST /teams/1/users or /users
@@ -28,6 +28,7 @@ class TeamsController < ApplicationController
     def update
       if @team.nil?
         if @user.update(user_params)
+          byebug
           render json: @user
         else
           render json: @user.errors, status: :unprocessable_entity
@@ -63,5 +64,9 @@ class TeamsController < ApplicationController
 
       def ensure_team
         @team = Team.find(params[:team_id])
+      end
+
+      def user_params
+        params.require(:user).permit(:name, :email)
       end
 end

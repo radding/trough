@@ -2,7 +2,7 @@ class Team < ApplicationRecord
     validates :name, uniqueness: true
 
     has_many :teams_users
-    has_many :teams, through: :teams_users
+    has_many :users, through: :teams_users
 
     before_validation do
         self.name = self.name.downcase
