@@ -28,7 +28,6 @@ class UsersController < ApplicationController
     def update
       if @team.nil?
         if @user.update(user_params)
-          byebug
           render json: @user
         else
           render json: @user.errors, status: :unprocessable_entity

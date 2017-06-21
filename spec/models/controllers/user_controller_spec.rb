@@ -12,7 +12,6 @@ RSpec.describe UsersController, type: :controller do
             resp["name"] = "tester testington"
 
             put :update, :id => user.id, :user => resp
-            byebug
             expect(response.code).to eq("200")
             user.reload
             expect(user.name).to eq("tester testington")
