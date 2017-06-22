@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 
     # POST /teams/1/users or /users
     def create
-      if !User.exsists?(email: user_params[:email])
+      if !User.exists?(email: user_params[:email])
         resp = {:error => "user_not_found", :status => "404", :message => "User with email #{user_params[:email]} not found"}
         render json: resp, :status => :notfound and return 
       end
