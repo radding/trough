@@ -1,0 +1,2 @@
+class TypePlace < ApplicationRecord
+end
