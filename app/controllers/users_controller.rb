@@ -2,6 +2,7 @@ class UsersController < ApplicationController
     before_action :set_user, only: [:show, :update, :destroy]
     before_action :set_team
     before_action :ensure_team, only: [:create]
+    before_action :authenticate_user!
 
     # GET /teams/1/users or /users
     def index
@@ -15,8 +16,8 @@ class UsersController < ApplicationController
 
     # POST /teams/1/users or /users
     def create
-      if !User.exists?(email: user_params[:email])
-        resp = {:error => "user_not_found", :status => "404", :message => "User with email #{user_params[:email]} not found"}
+      if !User.exists?(id: user_params[:id])
+        resp = {:error => "user_not_found", :status => "404", :message => "User with id #{user_params[:email]} not found"}
         render json: resp, :status => :notfound and return 
       end
       @user = User.find(user_params[:id])
