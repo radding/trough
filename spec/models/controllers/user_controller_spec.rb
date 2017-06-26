@@ -1,6 +1,14 @@
 require "rails_helper"
 
 RSpec.describe UsersController, type: :controller do
+    before(:each) do 
+        @request.env["devise.mapping"] = Devise.mappings[:user]
+        user = User.new
+        user.email = "unique@test.com"
+        user.update({:password => "testtesttest", :password_confirmation => "testtesttest"})
+        sign_in user
+    end
+    
     describe "only users" do
         it "updates user" do 
             user = User.new
@@ -27,7 +35,7 @@ RSpec.describe UsersController, type: :controller do
             get :index
             expect(response.code).to eq("200")
             result = JSON.parse response.body
-            expect(result.count).to eq(2)
+            expect(result.count).to eq(3)
         end
         
         it "gets specific users" do
@@ -64,7 +72,7 @@ RSpec.describe UsersController, type: :controller do
             delete :destroy, :id => user.id
             expect(response.code).to eq("204")
             
-            expect(User.all.count).to eq(1)
+            expect(User.all.count).to eq(2)
 
             user = User.new
             user.email = "test3@test.com"
@@ -76,7 +84,7 @@ RSpec.describe UsersController, type: :controller do
             delete :destroy, :id => user.id
             expect(response.code).to eq("204")
             
-            expect(User.all.count).to eq(1)
+            expect(User.all.count).to eq(2)
         end
     end
 
