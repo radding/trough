@@ -10,10 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170621143919) do
+ActiveRecord::Schema.define(version: 20170623194010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "group_users", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.integer  "group_id",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_group_users_on_group_id", using: :btree
+    t.index ["user_id"], name: "index_group_users_on_user_id", using: :btree
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.integer  "place_id",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "when"
+    t.index ["place_id"], name: "index_groups_on_place_id", using: :btree
+    t.index ["user_id"], name: "index_groups_on_user_id", using: :btree
+  end
+
+  create_table "places", force: :cascade do |t|
+    t.string   "name"
+    t.string   "rating"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "teams", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -32,6 +58,21 @@ ActiveRecord::Schema.define(version: 20170621143919) do
   end
 
   create_table "tests", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "type_places", force: :cascade do |t|
+    t.integer  "place_id",   null: false
+    t.integer  "type_id",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["place_id"], name: "index_type_places_on_place_id", using: :btree
+    t.index ["type_id"], name: "index_type_places_on_type_id", using: :btree
+  end
+
+  create_table "types", force: :cascade do |t|
+    t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -65,6 +106,12 @@ ActiveRecord::Schema.define(version: 20170621143919) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true, using: :btree
   end
 
+  add_foreign_key "group_users", "groups"
+  add_foreign_key "group_users", "users"
+  add_foreign_key "groups", "places"
+  add_foreign_key "groups", "users"
   add_foreign_key "teams_users", "teams"
   add_foreign_key "teams_users", "users"
+  add_foreign_key "type_places", "places"
+  add_foreign_key "type_places", "types"
 end
