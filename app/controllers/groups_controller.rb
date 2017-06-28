@@ -1,5 +1,6 @@
 class GroupsController < ApplicationController
   before_action :set_group, only: [:show, :update, :destroy]
+  before_action :authenticate_user!
 
   # GET /groups
   def index
@@ -15,8 +16,13 @@ class GroupsController < ApplicationController
 
   # POST /groups
   def create
+    # ActiveRecord::Base.transaction do
+    #   place = Place.find_or_create_by(group_params[:place][:name])
+    #   group_params[:place].delete
+    #   group_params[:place_id] = place.id
+    #   @group = Group.new(group_params)
+    # end
     @group = Group.new(group_params)
-
     if @group.save
       render json: @group, status: :created, location: @group
     else
