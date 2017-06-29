@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :group_user do
+  factory :user_outing do
     
   end
 end
