@@ -22,7 +22,18 @@ class OutingsController < ApplicationController
     #   outing_params[:place_id] = place.id
     #   @outing = Outing.new(outing_params)
     # end
-    @outing = Outing.new(outing_params)
+    #is params immutable?
+    ensure_team
+    if @team.nil?
+      render status: :unprocessable_entity
+    end
+    place = Place.find_or_create_by(name: outing_params[:place][:name])
+    test_hash = outing_params
+    test_hash[:place] = place
+    test_hash[:team_id] = @team.id
+    
+    @outing = Outing.new(test_hash)
+    byebug
     if @outing.save
       render json: @outing, status: :created, location: @outing
     else
@@ -50,8 +61,18 @@ class OutingsController < ApplicationController
       @outing = Outing.find(params[:id])
     end
 
+    def ensure_team
+      @team = Team.find(params[:team_id])
+    end
+
     # Only allow a trusted parameter "white list" through.
     def outing_params
-      params.fetch(:outing, {})
+      params.require(:outing).permit(
+        :name, 
+        :user_id,
+        :departure_time,
+        place: [
+          :name
+        ])
     end
 end
