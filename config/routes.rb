@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "/users/me", to: "users#me"
   mount_devise_token_auth_for 'User', at: 'auth'
   resources :teams do 
     resources :users

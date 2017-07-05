@@ -3,13 +3,21 @@ require "rails_helper"
 RSpec.describe UsersController, type: :controller do
     before(:each) do 
         @request.env["devise.mapping"] = Devise.mappings[:user]
-        user = User.new
-        user.email = "unique@test.com"
-        user.update({:password => "testtesttest", :password_confirmation => "testtesttest"})
-        sign_in user
+        @user = User.new
+        @user.email = "unique@test.com"
+        @user.update({:password => "testtesttest", :password_confirmation => "testtesttest"})
+        sign_in @user
+        @user.reload
     end
     
     describe "only users" do
+        it "hits me" do 
+            get :me
+            resp = JSON.parse response.body
+            expect(response.code).to eq("200")
+            expect(resp["id"]).to eq(@user.id)
+        end
+
         it "updates user" do 
             user = User.new
             user.email = "test@test.com"

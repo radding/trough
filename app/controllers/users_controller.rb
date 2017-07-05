@@ -53,6 +53,10 @@ class UsersController < ApplicationController
       @team.users.delete(@user)
     end
 
+    def me
+        render json: current_user
+    end
+    
     private
       def set_team
         @team = params[:team_id].present? ? Team.find(params[:team_id]) : nil
