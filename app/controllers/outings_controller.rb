@@ -1,5 +1,7 @@
 class OutingsController < ApplicationController
+  include ActionController::Serialization
   before_action :set_outing, only: [:show, :update, :destroy]
+  before_action :ensure_team, only: [:create]
   before_action :authenticate_user!
 
   # GET /outings
@@ -22,8 +24,6 @@ class OutingsController < ApplicationController
     #   outing_params[:place_id] = place.id
     #   @outing = Outing.new(outing_params)
     # end
-    #is params immutable?
-    ensure_team
     if @team.nil?
       render status: :unprocessable_entity
     end
@@ -33,7 +33,7 @@ class OutingsController < ApplicationController
     test_hash[:team_id] = @team.id
     
     @outing = Outing.new(test_hash)
-    byebug
+
     if @outing.save
       render json: @outing, status: :created, location: @outing
     else
