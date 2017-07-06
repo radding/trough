@@ -4,19 +4,19 @@ class OutingsController < ApplicationController
   before_action :ensure_team, only: [:create]
   before_action :authenticate_user!
 
-  # GET /outings
+  # GET /teams/1/outings
   def index
     @outings = Outing.all
 
     render json: @outings
   end
 
-  # GET /outings/1
+  # GET /teams/1/outings/1
   def show
     render json: @outing
   end
 
-  # POST /outings
+  # POST /teams/1/outings
   def create
     # ActiveRecord::Base.transaction do
     #   place = Place.find_or_create_by(outing_params[:place][:name])
@@ -41,7 +41,7 @@ class OutingsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /outings/1
+  # PATCH/PUT /teams/1/outings/1
   def update
     if @outing.update(outing_params)
       render json: @outing
@@ -50,7 +50,7 @@ class OutingsController < ApplicationController
     end
   end
 
-  # DELETE /outings/1
+  # DELETE /teams/1/outings/1
   def destroy
     @outing.destroy
   end

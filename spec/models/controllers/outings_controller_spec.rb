@@ -93,4 +93,25 @@ RSpec.describe OutingsController, :type => :controller do
       expect(response.code).to eq("201")
     end
   end
+
+  describe "PUT /teams/1/outings" do 
+	  it "creates new outing" do 
+	    params = {
+	      team_id: @team.id,
+	      outing: {
+	        name: "test",
+	        user_id: @user.id,
+	        place: {
+	          name: "foo"
+	        },
+	        departure_time: "2000-01-01 12:00:00" 
+	      }
+	    }
+	    post :create, params
+	    result = JSON.parse response.body
+	    result["outing"][:name] = "test2"
+	    put :update, params: {team_id: result["outing"]["team_id"], id: result["outing"]["id"], "outing" => result}
+	    expect(response.code).to eq("200")
+	  end
+	end
 end
