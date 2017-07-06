@@ -16,9 +16,9 @@ RSpec.describe OutingsController, :type => :controller do
     })
   end
 
-  describe "GET /teams/#/outings" do
+  describe "GET /teams/1/outings" do
     it "gets nothing" do 
-      get :index
+      get :index, team_id: @team.id
       expect(response.code).to eq("200")
       expect((JSON.parse response.body)["outings"]).to eq(Array.new)
     end
@@ -26,17 +26,17 @@ RSpec.describe OutingsController, :type => :controller do
     it "gets a single outing" do
       outing = Outing.create({
         name: "test",
-        departure_time: "2000-01-01 12-00-00",
+        departure_time: "2000-01-01 12:00:00",
         user_id: @user.id,
         team_id: @team.id,
         place_id: @place.id
       })
-      get :index
+      get :index, team_id: @team.id
       expect(response.code).to eq("200")
       result = (JSON.parse response.body)["outings"][0]
       expect(result["id"]).to eq(outing.id)
       expect(result["name"]).to eq(outing.name)
-      #expect(result["departure_time"]).to eq(outing.departure_time)
+      expect(Time.zone.parse(result["departure_time"])).to eq(outing.departure_time)
       expect(result["place_id"]).to eq(@place.id)
       expect(result["place"]["name"]).to eq(@place.name)
     end
@@ -44,31 +44,31 @@ RSpec.describe OutingsController, :type => :controller do
     it "gets multiple outings" do 
       outing1 = Outing.create({
         name: "test1",
-        departure_time: "2000-01-01 12-00-00",
+        departure_time: "2000-01-01 12:00:00",
         user_id: @user.id,
         team_id: @team.id,
         place_id: @place.id
       })
       outing2 = Outing.create({
         name: "test2",
-        departure_time: "2000-01-02 12-00-00",
+        departure_time: "2000-01-02 12:00:00",
         user_id: @user.id,
         team_id: @team.id,
         place_id: @place.id
       })
-      get :index
+      get :index, team_id: @team.id
       expect(response.code).to eq("200")
       result1 = (JSON.parse response.body)["outings"][0]
       expect(result1["id"]).to eq(outing1.id)
       expect(result1["name"]).to eq(outing1.name)
-      #expect(result1["departure_time"]).to eq(outing1.departure_time)
+      expect(Time.zone.parse(result1["departure_time"])).to eq(outing1.departure_time)
       expect(result1["place_id"]).to eq(@place.id)
       expect(result1["place"]["name"]).to eq(@place.name)
       
       result2 = (JSON.parse response.body)["outings"][1]
       expect(result2["id"]).to eq(outing2.id)
       expect(result2["name"]).to eq(outing2.name)
-      #expect(result2["departure_time"]).to eq(outing2.departure_time)
+      expect(Time.zone.parse(result2["departure_time"])).to eq(outing2.departure_time)
       expect(result2["place_id"]).to eq(@place.id)
       expect(result2["place"]["name"]).to eq(@place.name)
 
@@ -76,7 +76,7 @@ RSpec.describe OutingsController, :type => :controller do
     end
   end
 
-  describe "POST /outings" do 
+  describe "POST /teams/1/outings" do 
     it "creates new outing" do 
       params = {
         team_id: @team.id,
@@ -86,7 +86,7 @@ RSpec.describe OutingsController, :type => :controller do
           place: {
             name: "foo"
           },
-          departure_time: "2000-01-01 12-00-00" 
+          departure_time: "2000-01-01 12:00:00" 
         }
       }
       post :create, params

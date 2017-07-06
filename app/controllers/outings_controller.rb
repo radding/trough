@@ -35,7 +35,7 @@ class OutingsController < ApplicationController
     @outing = Outing.new(test_hash)
 
     if @outing.save
-      render json: @outing, status: :created, location: @outing
+      render json: @outing, status: :created
     else
       render json: @outing.errors, status: :unprocessable_entity
     end
