@@ -10,10 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170621143919) do
+ActiveRecord::Schema.define(version: 20170629214956) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "outings", force: :cascade do |t|
+    t.string   "name",           null: false
+    t.datetime "departure_time", null: false
+    t.integer  "user_id",        null: false
+    t.integer  "team_id",        null: false
+    t.integer  "place_id",       null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["place_id"], name: "index_outings_on_place_id", using: :btree
+    t.index ["team_id"], name: "index_outings_on_team_id", using: :btree
+    t.index ["user_id"], name: "index_outings_on_user_id", using: :btree
+  end
+
+  create_table "places", force: :cascade do |t|
+    t.string   "name"
+    t.string   "rating"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "teams", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -34,6 +54,30 @@ ActiveRecord::Schema.define(version: 20170621143919) do
   create_table "tests", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "type_places", force: :cascade do |t|
+    t.integer  "place_id",   null: false
+    t.integer  "type_id",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["place_id"], name: "index_type_places_on_place_id", using: :btree
+    t.index ["type_id"], name: "index_type_places_on_type_id", using: :btree
+  end
+
+  create_table "types", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_outings", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.integer  "outing_id",  null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["outing_id"], name: "index_user_outings_on_outing_id", using: :btree
+    t.index ["user_id"], name: "index_user_outings_on_user_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
@@ -65,6 +109,13 @@ ActiveRecord::Schema.define(version: 20170621143919) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true, using: :btree
   end
 
+  add_foreign_key "outings", "places"
+  add_foreign_key "outings", "teams"
+  add_foreign_key "outings", "users"
   add_foreign_key "teams_users", "teams"
   add_foreign_key "teams_users", "users"
+  add_foreign_key "type_places", "places"
+  add_foreign_key "type_places", "types"
+  add_foreign_key "user_outings", "outings"
+  add_foreign_key "user_outings", "users"
 end
