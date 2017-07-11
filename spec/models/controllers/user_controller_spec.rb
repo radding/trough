@@ -170,5 +170,48 @@ RSpec.describe UsersController, type: :controller do
             expect(result["users"].count).to eq(1)
             expect(result["users"][0]["id"]).to eq(new_user.id)
         end
+
+        it "joins 2 users to an outing" do 
+            user1 = User.new
+            user1.email = "user1@test.com"
+            user1.update({:password => "testtesttest", :password_confirmation => "testtesttest"})
+            user2 = User.new
+            user2.email = "user2@test.com"
+            user2.update({:password => "testtesttest", :password_confirmation => "testtesttest"})
+            team = Team.create({:name => "testteam"})
+            place = Place.create({ 
+                name: "foo",
+                google_place: "qpefij",
+                rating: 1
+            })
+            outing = Outing.create({
+                name: "test",
+                departure_time: "2000-01-01 12:00:00",
+                user_id: @user.id,
+                team_id: team.id,
+                place_id: place.id
+            })
+
+            params = {
+                team_id: team.id,
+                outing_id: outing.id,
+                user: {
+                    id: user1.id
+                }
+            }
+            post :join, params
+            result1 = JSON.parse response.body
+            expect(response.code).to eq("200")
+            expect(result1["users"].count).to eq(1)
+            expect(result1["users"][0]["id"]).to eq(user1.id)
+
+            params[:user][:id] = user2.id
+            post :join, params
+            result2 = JSON.parse response.body
+            expect(response.code).to eq("200")
+            expect(result2["users"].count).to eq(2)
+            expect(result2["users"][0]["id"]).to eq(user1.id)
+            expect(result2["users"][1]["id"]).to eq(user2.id)
+        end
     end
 end
