@@ -12,6 +12,7 @@ RSpec.describe OutingsController, :type => :controller do
     @team = Team.create({:name => "testteam"})
     @place = Place.create({ 
       name: "foo",
+      google_place: "qpefij",
       rating: 1
     })
   end
@@ -98,29 +99,32 @@ RSpec.describe OutingsController, :type => :controller do
 
   describe "PUT /teams/1/outings" do 
 	  it "creates new outing" do 
-	    params = {
-	      team_id: @team.id,
-	      outing: {
-	        name: "test",
-	        user_id: @user.id,
-	        place: {
-	          name: "foo"
-	        },
-	        departure_time: "2000-01-01 12:00:00" 
-	      }
-	    }
-	    post :create, params
-      result = JSON.parse response.body
-      put :update, params: {
-        team_id: result["team_id"], 
-        id: result["id"], 
+      post_params = {
+        team_id: @team.id,
         outing: {
-          name: "new name", 
-          departure_time: result["departure_time"],  
-          creator: @user,
-          place: @place
+          name: "test",
+          creator: @user.attributes,
+          place: {
+            google_place: "",
+            name: "foo"
+          },
+          departure_time: "2000-01-01 12:00:00" 
         }
       }
+	    post :create, post_params
+      result = JSON.parse response.body
+
+      put_params = {
+        team_id: result["team_id"],
+        id: result["id"],
+        outing: {
+          name: "new name",
+          creator: @user,
+          place: @place,
+          departure_time: result["departure_time"]
+        }
+      }
+      put :update, put_params
 	    expect(response.code).to eq("200")
       result = JSON.parse response.body
       expect(result["name"]).to eq("new name")
