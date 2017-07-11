@@ -58,6 +58,14 @@ class UsersController < ApplicationController
         render json: current_user
     end
     
+    # POST /teams/1/outings/1/users
+    def join
+      user = User.find(user_params[:id])
+      outing = Outing.find(params[:outing_id])
+      outing.users << user
+      render json: outing
+    end
+
     private
       def set_team
         @team = params[:team_id].present? ? Team.find(params[:team_id]) : nil

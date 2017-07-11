@@ -1,7 +1,7 @@
 class OutingsController < ApplicationController
   include ActionController::Serialization
-  before_action :set_outing, only: [:show, :update, :destroy, :join]
-  before_action :ensure_team, only: [:create, :join]
+  before_action :set_outing, only: [:show, :update, :destroy]
+  before_action :ensure_team, only: [:create]
   before_action :authenticate_user!
 
   # GET /teams/1/outings
@@ -57,11 +57,6 @@ class OutingsController < ApplicationController
     @outing.destroy
   end
 
-  # POST /teams/1/outings/1/users
-  def join
-    UserOuting.create(user_id: outing_params[:user][:id], outing_id: params[:outing_id])
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_outing
@@ -80,9 +75,8 @@ class OutingsController < ApplicationController
         creator: [:id],
         place: [
           :google_place,
-          :name],
-        user: [:id]
-      )
+          :name
+        ])
     end
 
     def default_serializer_options
