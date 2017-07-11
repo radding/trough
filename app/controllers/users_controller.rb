@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+    include ActionController::Serialization
     before_action :set_user, only: [:show, :update, :destroy]
     before_action :set_team
     before_action :ensure_team, only: [:create]
@@ -72,5 +73,11 @@ class UsersController < ApplicationController
 
       def user_params
         params.require(:user).permit(:name, :email, :id)
+      end
+
+      def default_serializer_options
+      {
+        root: false
+      }
       end
 end
