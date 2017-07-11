@@ -8,7 +8,7 @@ class OutingsController < ApplicationController
   def index
     @outings = Outing.all
 
-    render json: @outings
+    render json: @outings#, root: false
   end
 
   # GET /teams/1/outings/1
@@ -27,10 +27,12 @@ class OutingsController < ApplicationController
     if @team.nil?
       render status: :unprocessable_entity
     end
-    place = Place.find_or_create_by(name: outing_params[:place][:name])
+    place = Place.find_or_create_by(name: outing_params[:place][:name], google_place: outing_params[:place][:google_place])
     test_hash = outing_params
+    test_hash.delete(:creator)
     test_hash[:place] = place
     test_hash[:team_id] = @team.id
+    test_hash[:user_id] = outing_params[:creator][:id]
     
     @outing = Outing.new(test_hash)
 
@@ -69,10 +71,17 @@ class OutingsController < ApplicationController
     def outing_params
       params.require(:outing).permit(
         :name, 
-        :user_id,
         :departure_time,
+        creator: [:id],
         place: [
+          :google_place,
           :name
         ])
+    end
+
+    def default_serializer_options
+      {
+        root: false
+      }
     end
 end
