@@ -2,7 +2,7 @@ class OutingsController < ApplicationController
   include ActionController::Serialization
   before_action :set_outing, only: [:show, :update, :destroy]
   before_action :ensure_team, only: [:create]
-  #before_action :authenticate_user!
+  before_action :authenticate_user!
 
   # GET /teams/1/outings
   def index
@@ -29,9 +29,9 @@ class OutingsController < ApplicationController
     end
     place = Place.find_or_create_by(name: outing_params[:place][:name], google_place: outing_params[:place][:google_place])
     test_hash = outing_params
+    test_hash.delete(:creator)
     test_hash[:place] = place
     test_hash[:team_id] = @team.id
-    test_hash.delete(:creator);
     test_hash[:user_id] = outing_params[:creator][:id]
     
     @outing = Outing.new(test_hash)
