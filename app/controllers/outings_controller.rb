@@ -69,7 +69,6 @@ class OutingsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def outing_params
-      puts params
       params.require(:outing).permit(
         :name, 
         :departure_time,
