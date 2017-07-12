@@ -3,7 +3,7 @@ class UsersController < ApplicationController
     before_action :set_user, only: [:show, :update, :destroy]
     before_action :set_team
     before_action :ensure_team, only: [:create]
-    #before_action :authenticate_user!
+    before_action :authenticate_user!
 
     # GET /teams/1/users or /users
     def index
