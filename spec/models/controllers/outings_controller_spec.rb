@@ -75,6 +75,13 @@ RSpec.describe OutingsController, :type => :controller do
 
   describe "POST /teams/1/outings" do 
     it "creates new outing" do 
+      outing = Outing.create({
+        name: "test",
+        departure_time: "2000-01-01 12:00:00",
+        user_id: @user.id,
+        team_id: @team.id,
+        place_id: @place.id
+      })
       params = {
         team_id: @team.id,
         outing: {
