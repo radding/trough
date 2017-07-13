@@ -10,6 +10,7 @@ RSpec.describe OutingsController, :type => :controller do
     sign_in @user
 
     @team = Team.create({:name => "testteam"})
+    @team.users << @user
     @place = Place.create({ 
       name: "foo",
       google_place: "qpefij",
@@ -71,6 +72,69 @@ RSpec.describe OutingsController, :type => :controller do
       expect(result2["place"]["name"]).to eq(@place.name)
 
     end
+
+    it "gets only new Outings" do 
+      user2 = User.new
+      user2.email = "unique2@test.com"
+      user2.update({:password => "testtesttest", :password_confirmation => "testtesttest"})
+      team1 = Team.create({:name => "testteam11"})
+      team1.users << user2
+      @team.users << user2
+      outing1 = Outing.create({
+        name: "test1",
+        departure_time: "2000-01-01 12:00:00",
+        user_id: @user.id,
+        team_id: @team.id,
+        place_id: @place.id
+      })
+      outing4 = Outing.create({
+        name: "test4",
+        departure_time: "2000-01-01 12:00:00",
+        user_id: @user.id,
+        team_id: @team.id,
+        place_id: @place.id
+      })
+      outing2 = Outing.create({
+        name: "test2",
+        departure_time: "2000-01-02 12:00:00",
+        user_id: user2.id,
+        team_id: @team.id,
+        place_id: @place.id
+      })
+
+      outing3 = Outing.create({
+        name: "test3",
+        departure_time: "2000-01-02 12:00:00",
+        user_id: user2.id,
+        team_id: @team.id,
+        place_id: @place.id
+      })
+
+       outing5 = Outing.create({
+        name: "test3",
+        departure_time: "2000-01-02 12:00:00",
+        user_id: user2.id,
+        team_id: team1.id,
+        place_id: @place.id
+      })
+
+      outing = Outing.create({
+        name: "test3",
+        departure_time: "2000-01-02 12:00:00",
+        user_id: user2.id,
+        team_id: team1.id,
+        place_id: @place.id
+      })
+      get :index, team_id: @team.id, exclude_me: true
+      result = JSON.parse response.body
+      expect(result.count).to eq(2)
+
+      outing3.users << @user      
+      get :index, team_id: @team.id, exclude_me: true
+      result = JSON.parse response.body
+      expect(result.count).to eq(1)      
+    end
+    
   end
 
   describe "POST /teams/1/outings" do 

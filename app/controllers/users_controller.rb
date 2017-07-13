@@ -66,6 +66,12 @@ class UsersController < ApplicationController
       render json: outing
     end
 
+    def get_outings
+      user = User.find(user_params[:id])
+      team = Team.find(params[:team_id])
+      render json: user.outings
+    end
+
     private
       def set_team
         @team = params[:team_id].present? ? Team.find(params[:team_id]) : nil

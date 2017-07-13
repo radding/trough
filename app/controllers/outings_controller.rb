@@ -1,13 +1,16 @@
 class OutingsController < ApplicationController
   include ActionController::Serialization
   before_action :set_outing, only: [:show, :update, :destroy]
-  before_action :ensure_team, only: [:create]
+  before_action :ensure_team, only: [:create, :index]
   before_action :authenticate_user!
 
   # GET /teams/1/outings
   def index
-    @outings = Outing.all
-
+    if (request.query_parameters["exclude_me"].present?)
+      @outings = @team.outings.excludes current_user
+    else
+      @outings = @team.outings
+    end
     render json: @outings#, root: false
   end
 
